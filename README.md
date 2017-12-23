@@ -3,9 +3,10 @@ Python implementation of MatLab imresize() function.
 
 ## Table of contents
 1. [Background](#background)
-2. [Usage](#usage)
-3. [Additional info](#addinfo)
-4. [Note](#note)
+2. [System requirements](#req)
+3. [Usage](#usage)
+4. [Additional info](#addinfo)
+5. [Note](#note)
 ## Background <a name="background"></a>
 In the latest Super Resolution challenges (e.g. see [NTIRE 2017](http://www.vision.ee.ethz.ch/ntire17/)) the downscaling - *bicubic interpolation* - is performed via MatLab imresize() function.
 
@@ -22,6 +23,9 @@ All this leads to:
 2. Reference solution (upscaling with bicubic interpolation) is also should be done using MatLab
 
 As the most of the Deep Learning code is written under the python, we need to do some additional preprocessing/postprocessing using completely different environment (MatLab), and can't do upscaling/downscaling in-place using simple python functions. As a result, the implemented python imresize() function is done to overcome these difficulties.
+## System requirements <a name="req"></a>
+* python 2.7
+* numpy
 ## Usage <a name="usage"></a>
 imresize of *uint8* image using scale (e.g. 0.5 or 2):
 ```python
