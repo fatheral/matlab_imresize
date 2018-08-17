@@ -69,11 +69,28 @@ def imresizemex(inimg, weights, indices, dim):
     else:
         return outimg
 
-def resizeAlongDim(A, dim, weights, indices):
-    out = imresizemex(A, weights, indices, dim)
+def imresizevec(inimg, weights, indices, dim):
+    wshape = weights.shape
+    if dim == 0:
+        weights = weights.reshape((wshape[0], wshape[2], 1, 1))
+        outimg =  np.sum(weights*((inimg[indices].squeeze(axis=1)).astype(np.float64)), axis=1)
+    elif dim == 1:
+        weights = weights.reshape((1, wshape[0], wshape[2], 1))
+        outimg =  np.sum(weights*((inimg[:, indices].squeeze(axis=2)).astype(np.float64)), axis=2)
+    if inimg.dtype == np.uint8:
+        outimg = np.clip(outimg, 0, 255)
+        return np.around(outimg).astype(np.uint8)
+    else:
+        return outimg
+
+def resizeAlongDim(A, dim, weights, indices, mode="vec"):
+    if mode == "org":
+        out = imresizemex(A, weights, indices, dim)
+    else:
+        out = imresizevec(A, weights, indices, dim)
     return out
 
-def imresize(I, scalar_scale=None, output_shape=None):
+def imresize(I, scalar_scale=None, output_shape=None, mode="vec"):
     kernel = cubic
     kernel_width = 4.0
     # Fill scale and output_size
@@ -102,7 +119,7 @@ def imresize(I, scalar_scale=None, output_shape=None):
         flag2D = True
     for k in range(2):
         dim = order[k]
-        B = resizeAlongDim(B, dim, weights[dim], indices[dim])
+        B = resizeAlongDim(B, dim, weights[dim], indices[dim], mode)
     if flag2D:
         B = np.squeeze(B, axis=2)
     return B
