@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 from math import ceil, floor
 
@@ -12,6 +13,13 @@ def deriveScaleFromSize(img_shape_in, img_shape_out):
     for k in range(2):
         scale.append(1.0 * img_shape_out[k] / img_shape_in[k])
     return scale
+
+def triangle(x):
+    x = np.array(x).astype(np.float64)
+    lessthanzero = np.logical_and((x>=-1),x<0)
+    greaterthanzero = np.logical_and((x<=1),x>=0)
+    f = np.multiply((x+1),lessthanzero) + np.multiply((1-x),greaterthanzero)
+    return f
 
 def cubic(x):
     x = np.array(x).astype(np.float64)
@@ -90,8 +98,14 @@ def resizeAlongDim(A, dim, weights, indices, mode="vec"):
         out = imresizevec(A, weights, indices, dim)
     return out
 
-def imresize(I, scalar_scale=None, output_shape=None, mode="vec"):
-    kernel = cubic
+def imresize(I, scalar_scale=None, method='bicubic', output_shape=None, mode="vec"):
+    if method is 'bicubic':
+        kernel = cubic
+    elif method is 'bilinear':
+        kernel = triangle
+    else:
+        print ('Error: Unidentified method supplied')
+        
     kernel_width = 4.0
     # Fill scale and output_size
     if scalar_scale is not None:
@@ -102,7 +116,7 @@ def imresize(I, scalar_scale=None, output_shape=None, mode="vec"):
         scale = deriveScaleFromSize(I.shape, output_shape)
         output_size = list(output_shape)
     else:
-        print 'Error: scalar_scale OR output_shape should be defined!'
+        print ('Error: scalar_scale OR output_shape should be defined!')
         return
     scale_np = np.array(scale)
     order = np.argsort(scale_np)
