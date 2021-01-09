@@ -42,7 +42,7 @@ from skimage.io import imsave, imread
 from skimage import img_as_float
 img_uint8 = imread('test.png')
 img_double = img_as_float(img_uint8)
-new_img_double = imresize(img_double, output_shape=(123, 324)
+new_img_double = imresize(img_double, output_shape=(123, 324))
 imsave('test_double.png', convertDouble2Byte(new_img_double))
 ```
 ## Additional information <a name="addinfo"></a>
