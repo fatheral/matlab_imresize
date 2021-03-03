@@ -99,12 +99,12 @@ def resizeAlongDim(A, dim, weights, indices, mode="vec"):
     return out
 
 def imresize(I, scalar_scale=None, method='bicubic', output_shape=None, mode="vec"):
-    if method is 'bicubic':
+    if method == 'bicubic':
         kernel = cubic
-    elif method is 'bilinear':
+    elif method == 'bilinear':
         kernel = triangle
     else:
-        print ('Error: Unidentified method supplied')
+        raise ValueError('unidentified kernel method supplied')
         
     kernel_width = 4.0
     # Fill scale and output_size
@@ -116,8 +116,7 @@ def imresize(I, scalar_scale=None, method='bicubic', output_shape=None, mode="ve
         scale = deriveScaleFromSize(I.shape, output_shape)
         output_size = list(output_shape)
     else:
-        print ('Error: scalar_scale OR output_shape should be defined!')
-        return
+        raise ValueError('scalar_scale OR output_shape should be defined!')
     scale_np = np.array(scale)
     order = np.argsort(scale_np)
     weights = []
